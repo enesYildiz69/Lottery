@@ -1,5 +1,5 @@
 const { my_lottery_abi } = require('../contracts');
 
-const contract_address = "0x1cFE2f6b645831C3139Fb6e06F569E0E6Ae70392";
+const contract_address = "0x3974d36b02B47a9b541E0a677446213aE5785675";
 
 export { contract_address, my_lottery_abi };
