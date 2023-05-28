@@ -146,26 +146,35 @@ function App() {
         setResults(results => ({ ...results, generateWinningHashes: result }));
       });
     }
-    if(functionName === "LotteryFunction") {
-      contractState.methods.LotteryFunction().call().then(function(result) {
-        setResults(results => ({ ...results, LotteryFunction: result }));
+    // yes
+    if (functionName === "LotteryFunction") {
+      contractState.methods.LotteryFunction().send({ from: account })
+        .then(function(result) {
+          console.log("Lottery function executed successfully.");
+        })
+        .catch(function(error) {
+          console.error("Failed to execute lottery function:", error);
+        });
+    }
+    // yes
+    if (functionName === "buyTicket") {
+      contractState.methods.buyTicket(hash_rnd_number, parseInt(ticket_type)).send({from: account, value : 5}).then(function() {
+        console.log("Ticket bought successfully.");
+      }).catch(function(error) {
+        console.error("Failed to buy ticket:", error);
       });
     }
-    if(functionName === "buyTicket") {
-      contractState.methods.buyTicket(hash_rnd_number, parseInt(ticket_type)).send({from: account, gas:4700000})
-      .then(result => {
-        setResults(results => ({ ...results, buyTicket: "True" }));
-      })
-      .catch(err => {
-        console.error(err);
-        setResults(results => ({ ...results, buyTicket: "False" }));
-      })
+    // yes but it does not display anything
+    if (functionName === "getAllTickets") {
+      contractState.methods.getAllTickets().send({ from: account })
+        .then(function(result) {
+          console.log("getAllTickets function executed successfully.");
+        })
+        .catch(function(error) {
+          console.error("Failed to execute getAllTickets function:", error);
+        });
     }
-    if(functionName === "getAllTickets") {
-      contractState.methods.getAllTickets().call().then(function(result) {
-        setResults(results => ({ ...results, getAllTickets: result }));
-      });
-    }
+    
     if(functionName === "getAllLotteries") {
       contractState.methods.getAllLotteries().call().then(function(result) {
         setResults(results => ({ ...results, getAllLotteries: result }));
