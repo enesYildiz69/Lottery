@@ -98,45 +98,49 @@ function App() {
     );
   }
 
-  const str2arr = (str) => str.substring(1,str.length -1).split(",").map(s=>parseInt(s))
-  const str2WeiArr = (str) => str.substring(1,str.length -1).split(",").map(s=>web3State.utils.toWei(s, "wei"))
-  const str2bool = (str) => str === "true" ? true : false
+
+  // const str2WeiArr = (str) => str.substring(1,str.length -1).split(",").map(s=>web3State.utils.toWei(s, "wei"))
+
   const handleFunctionCall = async (functionName) => {
+    // yes
     if(functionName === "getOwner") {
       contractState.methods.getOwner().call().then(function(result) {
         setResults(results => ({ ...results, getOwner: result }));
       });
     }
-    if(functionName === "depositEther") {
-      contractState.methods.depositEther(myLotteryTokenAmount).send({from: account, gas:4700000})
-      .then(result => {
-        setResults(results => ({ ...results, depositEther: "True" }));
-      })
-      .catch(err => {
-        console.error(err);
-        setResults(results => ({ ...results, depositEther: "False" }));
-      })
+    // yes
+    if (functionName === "depositEther") {    
+      contractState.methods.depositEther(myLotteryTokenAmount).send({ from: account ,value: myLotteryTokenAmount })
+        .then(function(result) {
+          console.log(result);
+        })
+        .catch(function(error) {
+          console.error(error);
+        });
     }
-    if(functionName === "withdrawEther") {
-      contractState.methods.withdrawEther(myLotteryTokenAmount1).send({from: account, gas:4700000})
-      .then(result => {
-        setResults(results => ({ ...results, withdrawEther: "True" }));
-      })
-      .catch(err => {
-        console.error(err);
-        setResults(results => ({ ...results, withdrawEther: "False" }));
-      })
+    // need to try with another acc since it does not work on owner
+    if (functionName === "withdrawEther") {
+      contractState.methods.withdrawEther(myLotteryTokenAmount1).send({ from: account ,value: myLotteryTokenAmount1 })
+        .then(function(result) {
+          console.log(result);
+        })
+        .catch(function(error) {
+          console.error(error);
+        });
     }
+    // yes
     if(functionName === "getBalance") {
       contractState.methods.getBalance(address0).call().then(function(result) {
         setResults(results => ({ ...results, getBalance: result }));
       });
     }
+    // yes
     if(functionName === "generateRandomHash") {
       contractState.methods.generateRandomHash().call().then(function(result) {
         setResults(results => ({ ...results, generateRandomHash: result }));
       });
     }
+    // yes but it will be removed from ui since it will be called within lottery function
     if(functionName === "generateWinningHashes") {
       contractState.methods.generateWinningHashes().call().then(function(result) {
         setResults(results => ({ ...results, generateWinningHashes: result }));
@@ -296,7 +300,14 @@ function App() {
       <br/>
       <div className="function-container">
         <Button onClick={() => handleFunctionCall("generateWinningHashes")}>Generate Winning Hashes</Button>
-        {results?.generateWinningHashes && <span>Winning Hashes: <span className="bold">{results?.generateWinningHashes}</span></span>}
+        {results?.generateWinningHashes && (
+          <div>
+            <span>Winning Hashes:</span>
+            {results.generateWinningHashes.map((hash, index) => (
+              <div key={index} className="bold">{hash}</div>
+            ))}
+          </div>
+        )}
       </div>
       <br/>
       <div className="function-container">
