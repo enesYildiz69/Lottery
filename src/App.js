@@ -30,6 +30,8 @@ function App() {
   let [lottery_no5, setLottery_no5] = useState("");
   let [winning_tickets, setWinning_tickets] = useState("");
   let [unixtimeinweek, setUnixtimeinweek] = useState("");
+  const [tickets, setTickets] = useState([]);
+  const [lotteries, setLotteries] = useState([]);
 
   const [results, setResults] = useState({});
 
@@ -164,21 +166,32 @@ function App() {
         console.error("Failed to buy ticket:", error);
       });
     }
-    // yes but it does not display anything
+    // yes
     if (functionName === "getAllTickets") {
-      contractState.methods.getAllTickets().send({ from: account })
-        .then(function(result) {
+      contractState.methods
+        .getAllTickets()
+        .call({from: account})
+        .then(function (result) {
           console.log("getAllTickets function executed successfully.");
+          setTickets(result);
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error("Failed to execute getAllTickets function:", error);
         });
     }
     
-    if(functionName === "getAllLotteries") {
-      contractState.methods.getAllLotteries().call().then(function(result) {
-        setResults(results => ({ ...results, getAllLotteries: result }));
-      });
+    // yes
+    if (functionName === "getAllLotteries") {
+      contractState.methods
+        .getAllLotteries()
+        .call({from: account})
+        .then(function (result) {
+          console.log("getAllLotteries function executed successfully.");
+          setLotteries(result);
+        })
+        .catch(function (error) {
+          console.error("Failed to execute getAllLotteries function:", error);
+        });
     }
     if(functionName === "collectTicketRefund") {
       contractState.methods.collectTicketRefund(ticket_no).call().then(function(result) {
@@ -340,13 +353,59 @@ function App() {
       </div>
       <br/>
       <div className="function-container">
-        <Button onClick={() => handleFunctionCall("getAllTickets")}>Get All Tickets</Button>
-        {results?.getAllTickets && <span>All Tickets: <span className="bold">{results?.getAllTickets}</span></span>}
+        <Button onClick={() => handleFunctionCall("getAllTickets")}>
+          Get All Tickets
+        </Button>
+        {tickets.length > 0 && (
+          <div>
+            <span>All Tickets:</span>
+            {tickets.map((ticket, index) => (
+              <div key={index} className="ticket-info">
+                <span>Ticket {index + 1}:</span>
+                <br/>
+                <span>Owner: {ticket.ticketOwnerAddress}</span>
+                <br/>
+                <span>Hash: {ticket.hash_randomNo}</span>
+                <br/>
+                <span>Ticket ID: {ticket.ticket_id}</span>
+                <br/>
+                <span>Type: {ticket.ticketType}</span>
+                <br/>
+                <span>Status: {ticket.ticketStatus}</span>
+                <br/>
+                <span>Ticket Won?: {ticket.ticketWin}</span>
+                <br/>
+                <span>Lottery no: {ticket.lotteryNo}</span>
+                <br/>
+                <br/>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       <br/>
       <div className="function-container">
-        <Button onClick={() => handleFunctionCall("getAllLotteries")}>Get All Lotteries</Button>
-        {results?.getAllLotteries && <span>All Lotteries: <span className="bold">{results?.getAllLotteries}</span></span>}
+        <Button onClick={() => handleFunctionCall("getAllLotteries")}>
+          Get All Lotteries
+        </Button>
+        {lotteries.length > 0 && (
+          <div>
+            <span>All Lotteries:</span>
+            {lotteries.map((lottery, index) => (
+              <div key={index} className="lottery-info">
+                <span>Lottery {index + 1}:</span>
+                <br/>
+                <span>Lottery ID: {lottery.lottery_id}</span>
+                <br/>
+                <span>Prize pool: {lottery.prizePoolofLottery}</span>
+                <br/>
+                <span>Winning hashes: {lottery.winningHashes.join("\n")}</span>
+                <br/>
+                <br/>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       <br/>
       <div className="function-container">
