@@ -142,12 +142,6 @@ function App() {
         setResults(results => ({ ...results, generateRandomHash: result }));
       });
     }
-    // yes but it will be removed from ui since it will be called within lottery function
-    if(functionName === "generateWinningHashes") {
-      contractState.methods.generateWinningHashes().call().then(function(result) {
-        setResults(results => ({ ...results, generateWinningHashes: result }));
-      });
-    }
     // yes
     if (functionName === "LotteryFunction") {
       contractState.methods.LotteryFunction().send({ from: account })
@@ -318,18 +312,6 @@ function App() {
       <div className="function-container">
         <Button onClick={() => handleFunctionCall("generateRandomHash")}>Generate Random Hash</Button>
         {results?.generateRandomHash && <span>Random Hash: <span className="bold">{results?.generateRandomHash}</span></span>}
-      </div>
-      <br/>
-      <div className="function-container">
-        <Button onClick={() => handleFunctionCall("generateWinningHashes")}>Generate Winning Hashes</Button>
-        {results?.generateWinningHashes && (
-          <div>
-            <span>Winning Hashes:</span>
-            {results.generateWinningHashes.map((hash, index) => (
-              <div key={index} className="bold">{hash}</div>
-            ))}
-          </div>
-        )}
       </div>
       <br/>
       <div className="function-container">
