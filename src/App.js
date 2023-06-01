@@ -29,11 +29,17 @@ function App() {
   let [lottery_no3, setLottery_no3] = useState("");
   let [lottery_no4, setLottery_no4] = useState("");
   let [lottery_no5, setLottery_no5] = useState("");
+  let [lottery_no6, setLottery_no6] = useState("");
+  let [lottery_no7, setLottery_no7] = useState("");
+  let [ithTicket, setIthTicket] = useState("");
   let [winning_tickets, setWinning_tickets] = useState("");
   let [unixtimeinweek, setUnixtimeinweek] = useState("");
   const [tickets, setTickets] = useState([]);
   const [lotteries, setLotteries] = useState([]);
   const [revealedNumber, setRevealedNumber] = useState("");
+  const [lastTicketNumber, setLastTicketNumber] = useState("");
+  const [ithTicketNo, setIthTicketNo] = useState("");
+  const [ithTicketStatus, setIthTicketStatus] = useState("");
   const [results, setResults] = useState({});
 
   const logoRef = useRef();
@@ -204,25 +210,32 @@ function App() {
         console.error("Failed to execute revealRndNumber:", error);
       });
     }
-    if(functionName === "getLastOwnedTicketNo") {
-      contractState.methods.getLastOwnedTicketNo(parseInt(lottery_no)).send({from: account, gas:4700000})
-      .then(result => {
-        setResults(results => ({ ...results, getLastOwnedTicketNo: "True" }));
+    // yes
+    if (functionName === "getLastOwnedTicketNo") {
+      contractState.methods
+      .getLastOwnedTicketNo(parseInt(lottery_no6))
+      .call({ from: account })
+      .then((result) => {
+        console.log("getLastOwnedTicketNo executed successfully:", result);
+        setLastTicketNumber(result);
       })
-      .catch(err => {
-        console.error(err);
-        setResults(results => ({ ...results, getLastOwnedTicketNo: "False" }));
-      })
+      .catch((error) => {
+        console.error("Failed to execute getLastOwnedTicketNo:", error);
+      });
     }
-    if(functionName === "getIthOwnedTicketNo") {
-      contractState.methods.getIthOwnedTicketNo(parseInt(ticket_no2), parseInt(lottery_no1)).send({from: account, gas:4700000})
-      .then(result => {
-        setResults(results => ({ ...results, getIthOwnedTicketNo: "True" }));
+    // yes
+    if (functionName === "getIthOwnedTicketNo") {
+      contractState.methods
+      .getIthOwnedTicketNo(parseInt(ithTicket),parseInt(lottery_no7))
+      .call({ from: account })
+      .then((result) => {
+        console.log("getIthOwnedTicketNo executed successfully:", result);
+        setIthTicketNo(result[0]);
+        setIthTicketStatus(result[1]);
       })
-      .catch(err => {
-        console.error(err);
-        setResults(results => ({ ...results, getIthOwnedTicketNo: "False" }));
-      })
+      .catch((error) => {
+        console.error("Failed to execute getIthOwnedTicketNo:", error);
+      });
     }
     if(functionName === "checkIfTicketWon") {
       contractState.methods.checkIfTicketWon(lottery_no2,ticket_no3).call().then(function(result) {
@@ -415,30 +428,31 @@ function App() {
       <br/>
       <div className="function-container">
         <input
-            type="text"
-            value={lottery_no}
-            onChange={(e) => setLottery_no(e.target.value)}
-            placeholder="Lottery_no"
+          type="text"
+          value={lottery_no6}
+          onChange={(e) => setLottery_no6(e.target.value)}
+          placeholder="Lottery No"
         />
-        <Button onClick={() => handleFunctionCall("getLastOwnedTicketNo")}>Viev Last Owned Ticket</Button>
-        {results?.getLastOwnedTicketNo && <span>Ticket Id: <span className="bold">{results?.getLastOwnedTicketNo}</span></span>}
+        <Button onClick={() => handleFunctionCall("getLastOwnedTicketNo")}>Reveal Last Ticket Number</Button>
+        {lastTicketNumber && <span>Last Ticket Number: {lastTicketNumber}</span>}
       </div>
       <br/>
       <div className="function-container">
         <input
-            type="text"
-            value={ticket_no2}
-            onChange={(e) => setTicket_no2(e.target.value)}
-            placeholder="ticket_no"
+          type="text"
+          value={ithTicket}
+          onChange={(e) => setIthTicket(e.target.value)}
+          placeholder="Ticket No"
         />
         <input
-            type="text"
-            value={lottery_no1}
-            onChange={(e) => setLottery_no1(e.target.value)}
-            placeholder="Lottery_no"
+          type="text"
+          value={lottery_no7}
+          onChange={(e) => setLottery_no7(e.target.value)}
+          placeholder="Lottery No"
         />
-        <Button onClick={() => handleFunctionCall("getIthOwnedTicketNo")}>Get Ith Owned Ticket No</Button>
-        {results?.getIthOwnedTicketNo && <span>Ticket No: <span className="bold">{results?.getIthOwnedTicketNo}</span></span>}
+        <Button onClick={() => handleFunctionCall("getIthOwnedTicketNo")}>Get Ith Owned Ticket Number</Button>
+        {ithTicketNo && <span>Ith Owned Ticket Number: {ithTicketNo}</span>}
+        {ithTicketStatus && <span>Ith Owned Ticket Status: {ithTicketStatus}</span>}
       </div>
       <br/>
       <div className="function-container">
