@@ -36,6 +36,7 @@ function App() {
   let [lottery_no8, setLottery_no8] = useState("");
   let [lottery_no9, setLottery_no9] = useState("");
   let [lottery_no10, setLottery_no10] = useState("");
+  let [lottery_no11, setLottery_no11] = useState("");
   let [ithTicket, setIthTicket] = useState("");
   let [ithWonTicket, setIthWonTicket] = useState("");
   let [winning_tickets, setWinning_tickets] = useState("");
@@ -51,6 +52,7 @@ function App() {
   const [ithWonTicketStatus, setIthWonTicketStatus] = useState("");
   const [lotteryNo, setLotteryNo] = useState("");
   const [results, setResults] = useState({});
+  const [lotteryMoney, setLotteryMoney] = useState("");
 
   const logoRef = useRef();
   const [refState, setRefState] = useState();
@@ -286,7 +288,7 @@ function App() {
           console.error("Failed to execute getIthWinningTicket:", error);
         });
     }
-    
+    // yes
     if (functionName === "getLotteryNos") {
       contractState.methods
       .getLotteryNos(parseInt(unixtimeinweek))
@@ -299,18 +301,20 @@ function App() {
         console.error("Failed to execute getLotteryNos:", error);
       });
     }
-    if(functionName === "getTotalLotteryMoneyCollected") {
-      contractState.methods.getTotalLotteryMoneyCollected(lottery_no5).send({from: account, gas:4700000})
-      .then(result => {
-        setResults(results => ({ ...results, getTotalLotteryMoneyCollected: "True" }));
+    // yes
+    if (functionName === "getTotalLotteryMoneyCollected") {
+      contractState.methods
+      .getTotalLotteryMoneyCollected(parseInt(lottery_no11))
+      .call({ from: account })
+      .then((result) => {
+        console.log("getTotalLotteryMoneyCollected executed successfully:", result);
+        setLotteryMoney(result);
       })
-      .catch(err => {
-        console.error(err);
-        setResults(results => ({ ...results, getTotalLotteryMoneyCollected: "False" }));
-      })
+      .catch((error) => {
+        console.error("Failed to execute getTotalLotteryMoneyCollected:", error);
+      });
     }
-  }
-
+  };
   return (
     <div className="App">
       <div className="function-container">
@@ -546,13 +550,13 @@ function App() {
       <br/>
       <div className="function-container">
         <input
-            type="text"
-            value={lottery_no5}
-            onChange={(e) => setLottery_no5(e.target.value)}
-            placeholder="lottery_no"
+          type="text"
+          value={lottery_no11}
+          onChange={(e) => setLottery_no11(e.target.value)}
+          placeholder="Lottery No"
         />
-        <Button onClick={() => handleFunctionCall("getTotalLotteryMoneyCollected")}>Get Total Lottery Money</Button>
-        {results?.getTotalLotteryMoneyCollected && <span>Total Lottery Money: <span className="bold">{results?.getTotalLotteryMoneyCollected}</span></span>}
+        <Button onClick={() => handleFunctionCall("getTotalLotteryMoneyCollected")}>Get Lottery Money</Button>
+        {lotteryMoney && <span>Lottery Money: {lotteryMoney}</span>}
       </div>
       <br/>
     </div>
