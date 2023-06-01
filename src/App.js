@@ -24,6 +24,7 @@ function App() {
   let [ticket_no4, setTicket_no4] = useState("");
   let [ticket_no5, setTicket_no5] = useState("");
   let [ticket_no6, setTicket_no6] = useState("");
+  let [ticket_no7, setTicket_no7] = useState("");
   let [lottery_no, setLottery_no] = useState("");
   let [lottery_no1, setLottery_no1] = useState("");
   let [lottery_no2, setLottery_no2] = useState("");
@@ -33,6 +34,7 @@ function App() {
   let [lottery_no6, setLottery_no6] = useState("");
   let [lottery_no7, setLottery_no7] = useState("");
   let [lottery_no8, setLottery_no8] = useState("");
+  let [lottery_no9, setLottery_no9] = useState("");
   let [ithTicket, setIthTicket] = useState("");
   let [winning_tickets, setWinning_tickets] = useState("");
   let [unixtimeinweek, setUnixtimeinweek] = useState("");
@@ -253,15 +255,17 @@ function App() {
         console.error("Failed to execute checkIfTicketWon:", error);
       });
     }
-    if(functionName === "collectTicketPrize") {
-      contractState.methods.collectTicketPrize(parseInt(lottery_no3,ticket_no4)).send({from: account, gas:4700000})
-      .then(result => {
-        setResults(results => ({ ...results, collectTicketPrize: "True" }));
+    // no but might be because of nobody won
+    if (functionName === "collectTicketPrize") {
+      contractState.methods
+      .collectTicketPrize(parseInt(lottery_no9),parseInt(ticket_no7))
+      .call({ from: account })
+      .then((result) => {
+        console.log("collectTicketPrize executed successfully:", result);
       })
-      .catch(err => {
-        console.error(err);
-        setResults(results => ({ ...results, collectTicketPrize: "False" }));
-      })
+      .catch((error) => {
+        console.error("Failed to execute collectTicketPrize:", error);
+      });
     }
     if(functionName === "getIthWinningTicket") {
       contractState.methods.getIthWinningTicket(winning_tickets, lottery_no4).send({from: account, gas:4700000})
@@ -485,16 +489,16 @@ function App() {
       <br/>
       <div className="function-container">
         <input
-            type="text"
-            value={lottery_no3}
-            onChange={(e) => setLottery_no3(e.target.value)}
-            placeholder="lottery_no"
+          type="text"
+          value={lottery_no9}
+          onChange={(e) => setLottery_no9(e.target.value)}
+          placeholder="Lottery No"
         />
         <input
-            type="text"
-            value={ticket_no4}
-            onChange={(e) => setTicket_no4(e.target.value)}
-            placeholder="ticket_no"
+          type="text"
+          value={ticket_no7}
+          onChange={(e) => setTicket_no7(e.target.value)}
+          placeholder="Ticket No"
         />
         <Button onClick={() => handleFunctionCall("collectTicketPrize")}>Collect Ticket Prize</Button>
       </div>
