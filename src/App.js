@@ -35,7 +35,9 @@ function App() {
   let [lottery_no7, setLottery_no7] = useState("");
   let [lottery_no8, setLottery_no8] = useState("");
   let [lottery_no9, setLottery_no9] = useState("");
+  let [lottery_no10, setLottery_no10] = useState("");
   let [ithTicket, setIthTicket] = useState("");
+  let [ithWonTicket, setIthWonTicket] = useState("");
   let [winning_tickets, setWinning_tickets] = useState("");
   let [unixtimeinweek, setUnixtimeinweek] = useState("");
   const [tickets, setTickets] = useState([]);
@@ -44,7 +46,9 @@ function App() {
   const [lastTicketNumber, setLastTicketNumber] = useState("");
   const [wonAmount, setWonAmount] = useState("");
   const [ithTicketNo, setIthTicketNo] = useState("");
+  const [ithWonTicketNo, setIthWonTicketNo] = useState("");
   const [ithTicketStatus, setIthTicketStatus] = useState("");
+  const [ithWonTicketStatus, setIthWonTicketStatus] = useState("");
   const [results, setResults] = useState({});
 
   const logoRef = useRef();
@@ -267,16 +271,21 @@ function App() {
         console.error("Failed to execute collectTicketPrize:", error);
       });
     }
-    if(functionName === "getIthWinningTicket") {
-      contractState.methods.getIthWinningTicket(winning_tickets, lottery_no4).send({from: account, gas:4700000})
-      .then(result => {
-        setResults(results => ({ ...results, getIthWinningTicket: "True" }));
-      })
-      .catch(err => {
-        console.error(err);
-        setResults(results => ({ ...results, getIthWinningTicket: "False" }));
-      })
+    // no but might be because of nobody won
+    if (functionName === "getIthWinningTicket") {
+      contractState.methods
+        .getIthWinningTicket(parseInt(ithWonTicket), parseInt(lottery_no10))
+        .call({ from: account })
+        .then((result) => {
+          console.log("getIthWinningTicket executed successfully:", result);
+          setIthWonTicketNo(result[0]);
+          setIthWonTicketStatus(result[1]);
+        })
+        .catch((error) => {
+          console.error("Failed to execute getIthWinningTicket:", error);
+        });
     }
+    
     if(functionName === "getLotteryNos") {
       contractState.methods.getLotteryNos(parseInt(unixtimeinweek)).send({from: account, gas:4700000})
       .then(result => {
@@ -505,19 +514,20 @@ function App() {
       <br/>
       <div className="function-container">
         <input
-            type="text"
-            value={winning_tickets}
-            onChange={(e) => setWinning_tickets(e.target.value)}
-            placeholder="Ith winner "
+          type="text"
+          value={ithWonTicket}
+          onChange={(e) => setIthWonTicket(e.target.value)}
+          placeholder="Ticket No"
         />
         <input
-            type="text"
-            value={lottery_no4}
-            onChange={(e) => setLottery_no4(e.target.value)}
-            placeholder="lottery_no"
+          type="text"
+          value={lottery_no10}
+          onChange={(e) => setLottery_no10(e.target.value)}
+          placeholder="Lottery No"
         />
-        <Button onClick={() => handleFunctionCall("getIthWinningTicket")}>Get Ith Winning Ticket</Button>
-        {results?.checkIfTicketWon && <span>Ticket_no and Amount: <span className="bold">{results?.checkIfTicketWon}</span></span>}
+        <Button onClick={() => handleFunctionCall("getIthWinningTicket")}>Get Ith Won Ticket Number</Button>
+        {ithWonTicketNo && <span>Ith Won Ticket Number: {ithWonTicketNo}</span>}
+        {ithWonTicketStatus && <span>Ith Won Ticket Status: {ithWonTicketStatus}</span>}
       </div>
       <br/>
       <div className="function-container">
