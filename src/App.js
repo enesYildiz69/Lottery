@@ -22,6 +22,7 @@ function App() {
   let [ticket_no2, setTicket_no2] = useState("");
   let [ticket_no3, setTicket_no3] = useState("");
   let [ticket_no4, setTicket_no4] = useState("");
+  let [ticket_no5, setTicket_no5] = useState("");
   let [lottery_no, setLottery_no] = useState("");
   let [lottery_no1, setLottery_no1] = useState("");
   let [lottery_no2, setLottery_no2] = useState("");
@@ -32,7 +33,7 @@ function App() {
   let [unixtimeinweek, setUnixtimeinweek] = useState("");
   const [tickets, setTickets] = useState([]);
   const [lotteries, setLotteries] = useState([]);
-
+  const [revealedNumber, setRevealedNumber] = useState("");
   const [results, setResults] = useState({});
 
   const logoRef = useRef();
@@ -100,9 +101,6 @@ function App() {
     );
   }
 
-
-  // const str2WeiArr = (str) => str.substring(1,str.length -1).split(",").map(s=>web3State.utils.toWei(s, "wei"))
-
   const handleFunctionCall = async (functionName) => {
     // yes
     if(functionName === "getOwner") {
@@ -120,7 +118,7 @@ function App() {
           console.error(error);
         });
     }
-    // need to try with another acc since it does not work on owner
+    // tried with another acc and it did not work
     if (functionName === "withdrawEther") {
       contractState.methods.withdrawEther(myLotteryTokenAmount1).send({ from: account ,value: myLotteryTokenAmount1 })
         .then(function(result) {
@@ -187,20 +185,24 @@ function App() {
           console.error("Failed to execute getAllLotteries function:", error);
         });
     }
+    // it says ticket alreaady refunded even if it is not and need to try with another acc
     if(functionName === "collectTicketRefund") {
       contractState.methods.collectTicketRefund(ticket_no).call().then(function(result) {
         setResults(results => ({ ...results, collectTicketRefund: result }));
       });
     }
-    if(functionName === "revealRndNumber") {
-      contractState.methods.revealRndNumber(parseInt(ticket_no1)).send({from: account, gas:4700000})
-      .then(result => {
-        setResults(results => ({ ...results, revealRndNumber: "True" }));
+    // yes
+    if (functionName === "revealRndNumber") {
+      contractState.methods
+      .revealRndNumber(parseInt(ticket_no5))
+      .call({ from: account })
+      .then((result) => {
+        console.log("revealRndNumber executed successfully:", result);
+        setRevealedNumber(result);
       })
-      .catch(err => {
-        console.error(err);
-        setResults(results => ({ ...results, revealRndNumber: "False" }));
-      })
+      .catch((error) => {
+        console.error("Failed to execute revealRndNumber:", error);
+      });
     }
     if(functionName === "getLastOwnedTicketNo") {
       contractState.methods.getLastOwnedTicketNo(parseInt(lottery_no)).send({from: account, gas:4700000})
@@ -402,13 +404,13 @@ function App() {
       <br/>
       <div className="function-container">
         <input
-            type="text"
-            value={ticket_no1}
-            onChange={(e) => setTicket_no1(e.target.value)}
-            placeholder="Ticket_no"
+          type="text"
+          value={ticket_no5}
+          onChange={(e) => setTicket_no5(e.target.value)}
+          placeholder="Ticket No"
         />
-        <Button onClick={() => handleFunctionCall("revealRndNumber")}>Viev Ticket Hash</Button>
-        {results?.revealRndNumber && <span>Ticket Hash: <span className="bold">{results?.revealRndNumber}</span></span>}
+        <Button onClick={() => handleFunctionCall("revealRndNumber")}>Reveal Random Number</Button>
+        {revealedNumber && <span>Revealed Random Number: {revealedNumber}</span>}
       </div>
       <br/>
       <div className="function-container">
