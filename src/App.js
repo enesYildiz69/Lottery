@@ -49,6 +49,7 @@ function App() {
   const [ithWonTicketNo, setIthWonTicketNo] = useState("");
   const [ithTicketStatus, setIthTicketStatus] = useState("");
   const [ithWonTicketStatus, setIthWonTicketStatus] = useState("");
+  const [lotteryNo, setLotteryNo] = useState("");
   const [results, setResults] = useState({});
 
   const logoRef = useRef();
@@ -286,15 +287,17 @@ function App() {
         });
     }
     
-    if(functionName === "getLotteryNos") {
-      contractState.methods.getLotteryNos(parseInt(unixtimeinweek)).send({from: account, gas:4700000})
-      .then(result => {
-        setResults(results => ({ ...results, getLotteryNos: "True" }));
+    if (functionName === "getLotteryNos") {
+      contractState.methods
+      .getLotteryNos(parseInt(unixtimeinweek))
+      .call({ from: account })
+      .then((result) => {
+        console.log("getLotteryNos executed successfully:", result);
+        setLotteryNo(result);
       })
-      .catch(err => {
-        console.error(err);
-        setResults(results => ({ ...results, getLotteryNos: "False" }));
-      })
+      .catch((error) => {
+        console.error("Failed to execute getLotteryNos:", error);
+      });
     }
     if(functionName === "getTotalLotteryMoneyCollected") {
       contractState.methods.getTotalLotteryMoneyCollected(lottery_no5).send({from: account, gas:4700000})
@@ -532,13 +535,13 @@ function App() {
       <br/>
       <div className="function-container">
         <input
-            type="text"
-            value={unixtimeinweek}
-            onChange={(e) => setUnixtimeinweek(e.target.value)}
-            placeholder="unixtimeinweek"
+          type="text"
+          value={unixtimeinweek}
+          onChange={(e) => setUnixtimeinweek(e.target.value)}
+          placeholder="Unix Time In Week (start: 1683000000)"
         />
-        <Button onClick={() => handleFunctionCall("getLotteryNos")}>Get Lottery Number</Button>
-        {results?.getLotteryNos && <span>Lottery Number: <span className="bold">{results?.getLotteryNos}</span></span>}
+        <Button onClick={() => handleFunctionCall("getLotteryNos")}>Get Lottery No In Given Time</Button>
+        {lotteryNo && <span>Lottery No: {lotteryNo}</span>}
       </div>
       <br/>
       <div className="function-container">
