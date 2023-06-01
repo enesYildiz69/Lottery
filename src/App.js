@@ -23,6 +23,7 @@ function App() {
   let [ticket_no3, setTicket_no3] = useState("");
   let [ticket_no4, setTicket_no4] = useState("");
   let [ticket_no5, setTicket_no5] = useState("");
+  let [ticket_no6, setTicket_no6] = useState("");
   let [lottery_no, setLottery_no] = useState("");
   let [lottery_no1, setLottery_no1] = useState("");
   let [lottery_no2, setLottery_no2] = useState("");
@@ -31,6 +32,7 @@ function App() {
   let [lottery_no5, setLottery_no5] = useState("");
   let [lottery_no6, setLottery_no6] = useState("");
   let [lottery_no7, setLottery_no7] = useState("");
+  let [lottery_no8, setLottery_no8] = useState("");
   let [ithTicket, setIthTicket] = useState("");
   let [winning_tickets, setWinning_tickets] = useState("");
   let [unixtimeinweek, setUnixtimeinweek] = useState("");
@@ -38,6 +40,7 @@ function App() {
   const [lotteries, setLotteries] = useState([]);
   const [revealedNumber, setRevealedNumber] = useState("");
   const [lastTicketNumber, setLastTicketNumber] = useState("");
+  const [wonAmount, setWonAmount] = useState("");
   const [ithTicketNo, setIthTicketNo] = useState("");
   const [ithTicketStatus, setIthTicketStatus] = useState("");
   const [results, setResults] = useState({});
@@ -237,9 +240,17 @@ function App() {
         console.error("Failed to execute getIthOwnedTicketNo:", error);
       });
     }
-    if(functionName === "checkIfTicketWon") {
-      contractState.methods.checkIfTicketWon(lottery_no2,ticket_no3).call().then(function(result) {
-        setResults(results => ({ ...results, checkIfTicketWon: result }));
+    // yes
+    if (functionName === "checkIfTicketWon") {
+      contractState.methods
+      .checkIfTicketWon(parseInt(lottery_no8),parseInt(ticket_no6))
+      .call({ from: account })
+      .then((result) => {
+        console.log("checkIfTicketWon executed successfully:", result);
+        setWonAmount(result);
+      })
+      .catch((error) => {
+        console.error("Failed to execute checkIfTicketWon:", error);
       });
     }
     if(functionName === "collectTicketPrize") {
@@ -457,19 +468,19 @@ function App() {
       <br/>
       <div className="function-container">
         <input
-            type="text"
-            value={lottery_no2}
-            onChange={(e) => setLottery_no2(e.target.value)}
-            placeholder="lottery_no"
+          type="text"
+          value={lottery_no8}
+          onChange={(e) => setLottery_no8(e.target.value)}
+          placeholder="Lottery No"
         />
         <input
-            type="text"
-            value={ticket_no3}
-            onChange={(e) => setTicket_no3(e.target.value)}
-            placeholder="ticket_no"
+          type="text"
+          value={ticket_no6}
+          onChange={(e) => setTicket_no6(e.target.value)}
+          placeholder="Ticket No"
         />
         <Button onClick={() => handleFunctionCall("checkIfTicketWon")}>Check If Ticket Won</Button>
-        {results?.checkIfTicketWon && <span>Won Amount: <span className="bold">{results?.checkIfTicketWon}</span></span>}
+        {wonAmount && <span>Won Amount: {wonAmount}</span>}
       </div>
       <br/>
       <div className="function-container">
