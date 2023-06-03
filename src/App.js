@@ -53,7 +53,8 @@ function App() {
   const [lotteryNo, setLotteryNo] = useState("");
   const [results, setResults] = useState({});
   const [lotteryMoney, setLotteryMoney] = useState("");
-
+  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage1, setErrorMessage1] = useState("");
   const logoRef = useRef();
   const [refState, setRefState] = useState();
 
@@ -262,23 +263,24 @@ function App() {
         console.error("Failed to execute checkIfTicketWon:", error);
       });
     }
-    // no but might be because of nobody won
+    // yes, displays error but cannot test because nobody wins
     if (functionName === "collectTicketPrize") {
       contractState.methods
       .collectTicketPrize(parseInt(lottery_no9),parseInt(ticket_no7))
-      .call({ from: account })
+      .send({ from: account })
       .then((result) => {
         console.log("collectTicketPrize executed successfully:", result);
       })
       .catch((error) => {
         console.error("Failed to execute collectTicketPrize:", error);
+        setErrorMessage("Unfortunatelly, ticket did not win.");
       });
     }
-    // no but might be because of nobody won
+    // yes, displays error but cannot test because nobody wins
     if (functionName === "getIthWinningTicket") {
       contractState.methods
         .getIthWinningTicket(parseInt(ithWonTicket), parseInt(lottery_no10))
-        .call({ from: account })
+        .send({ from: account })
         .then((result) => {
           console.log("getIthWinningTicket executed successfully:", result);
           setIthWonTicketNo(result[0]);
@@ -286,6 +288,7 @@ function App() {
         })
         .catch((error) => {
           console.error("Failed to execute getIthWinningTicket:", error);
+          setErrorMessage("There is no winning ticket.");
         });
     }
     // yes
@@ -517,6 +520,7 @@ function App() {
           placeholder="Ticket No"
         />
         <Button onClick={() => handleFunctionCall("collectTicketPrize")}>Collect Ticket Prize</Button>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
       </div>
       <br/>
       <div className="function-container">
@@ -535,6 +539,7 @@ function App() {
         <Button onClick={() => handleFunctionCall("getIthWinningTicket")}>Get Ith Won Ticket Number</Button>
         {ithWonTicketNo && <span>Ith Won Ticket Number: {ithWonTicketNo}</span>}
         {ithWonTicketStatus && <span>Ith Won Ticket Status: {ithWonTicketStatus}</span>}
+        {errorMessage1 && <p className="error-message">{errorMessage1}</p>}
       </div>
       <br/>
       <div className="function-container">
