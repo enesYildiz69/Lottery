@@ -110,13 +110,11 @@ function App() {
   }
 
   const handleFunctionCall = async (functionName) => {
-    // yes
     if(functionName === "getOwner") {
       contractState.methods.getOwner().call().then(function(result) {
         setResults(results => ({ ...results, getOwner: result }));
       });
     }
-    // yes
     if (functionName === "depositEther") {    
       contractState.methods.depositEther(myLotteryTokenAmount).send({ from: account ,value: myLotteryTokenAmount })
         .then(function(result) {
@@ -126,9 +124,8 @@ function App() {
           console.error(error);
         });
     }
-    // tried with another acc and it did not work
     if (functionName === "withdrawEther") {
-      contractState.methods.withdrawEther(myLotteryTokenAmount1).send({ from: account ,value: myLotteryTokenAmount1 })
+      contractState.methods.withdrawEther(myLotteryTokenAmount1).send({ from: account})
         .then(function(result) {
           console.log(result);
         })
@@ -136,19 +133,16 @@ function App() {
           console.error(error);
         });
     }
-    // yes
     if(functionName === "getBalance") {
       contractState.methods.getBalance(address0).call().then(function(result) {
         setResults(results => ({ ...results, getBalance: result }));
       });
     }
-    // yes
     if(functionName === "generateRandomHash") {
       contractState.methods.generateRandomHash().call().then(function(result) {
         setResults(results => ({ ...results, generateRandomHash: result }));
       });
     }
-    // yes
     if (functionName === "LotteryFunction") {
       contractState.methods.LotteryFunction().send({ from: account })
         .then(function(result) {
@@ -158,7 +152,6 @@ function App() {
           console.error("Failed to execute lottery function:", error);
         });
     }
-    // yes
     if (functionName === "buyTicket") {
       contractState.methods.buyTicket(hash_rnd_number, parseInt(ticket_type)).send({from: account, value : 5}).then(function() {
         console.log("Ticket bought successfully.");
@@ -166,7 +159,6 @@ function App() {
         console.error("Failed to buy ticket:", error);
       });
     }
-    // yes
     if (functionName === "getAllTickets") {
       contractState.methods
         .getAllTickets()
@@ -179,8 +171,6 @@ function App() {
           console.error("Failed to execute getAllTickets function:", error);
         });
     }
-    
-    // yes
     if (functionName === "getAllLotteries") {
       contractState.methods
         .getAllLotteries()
@@ -193,13 +183,12 @@ function App() {
           console.error("Failed to execute getAllLotteries function:", error);
         });
     }
-    // yes
+    
     if(functionName === "collectTicketRefund") {
       contractState.methods.collectTicketRefund(ticket_no).send({from: account}).then(function(result) {
         setResults(results => ({ ...results, collectTicketRefund: result }));
       });
     }
-    // yes
     if (functionName === "revealRndNumber") {
       contractState.methods
       .revealRndNumber(parseInt(ticket_no5))
@@ -211,8 +200,7 @@ function App() {
       .catch((error) => {
         console.error("Failed to execute revealRndNumber:", error);
       });
-    }
-    // yes
+    } 
     if (functionName === "getLastOwnedTicketNo") {
       contractState.methods
       .getLastOwnedTicketNo(parseInt(lottery_no6))
@@ -225,7 +213,6 @@ function App() {
         console.error("Failed to execute getLastOwnedTicketNo:", error);
       });
     }
-    // yes
     if (functionName === "getIthOwnedTicketNo") {
       contractState.methods
       .getIthOwnedTicketNo(parseInt(ithTicket),parseInt(lottery_no7))
@@ -239,7 +226,6 @@ function App() {
         console.error("Failed to execute getIthOwnedTicketNo:", error);
       });
     }
-    // yes
     if (functionName === "checkIfTicketWon") {
       contractState.methods
       .checkIfTicketWon(parseInt(lottery_no8),parseInt(ticket_no6))
@@ -252,7 +238,6 @@ function App() {
         console.error("Failed to execute checkIfTicketWon:", error);
       });
     }
-    // yes, displays error but cannot test because nobody wins
     if (functionName === "collectTicketPrize") {
       contractState.methods
       .collectTicketPrize(parseInt(lottery_no9),parseInt(ticket_no7))
@@ -265,7 +250,6 @@ function App() {
         setErrorMessage("Unfortunatelly, ticket did not win.");
       });
     }
-    // yes, displays error but cannot test because nobody wins
     if (functionName === "getIthWinningTicket") {
       contractState.methods
         .getIthWinningTicket(parseInt(ithWonTicket), parseInt(lottery_no10))
@@ -280,7 +264,6 @@ function App() {
           setErrorMessage("There is no winning ticket.");
         });
     }
-    // yes
     if (functionName === "getLotteryNos") {
       contractState.methods
       .getLotteryNos(parseInt(unixtimeinweek))
@@ -293,7 +276,6 @@ function App() {
         console.error("Failed to execute getLotteryNos:", error);
       });
     }
-    // yes
     if (functionName === "getTotalLotteryMoneyCollected") {
       contractState.methods
       .getTotalLotteryMoneyCollected(parseInt(lottery_no11))
