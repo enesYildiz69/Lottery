@@ -18,19 +18,9 @@ function App() {
   let [hash_rnd_number, setHash_rnd_number] = useState("");
   let [ticket_type, setTicket_type] = useState("");
   let [ticket_no, setTicket_no] = useState("");
-  let [ticket_no1, setTicket_no1] = useState("");
-  let [ticket_no2, setTicket_no2] = useState("");
-  let [ticket_no3, setTicket_no3] = useState("");
-  let [ticket_no4, setTicket_no4] = useState("");
   let [ticket_no5, setTicket_no5] = useState("");
   let [ticket_no6, setTicket_no6] = useState("");
   let [ticket_no7, setTicket_no7] = useState("");
-  let [lottery_no, setLottery_no] = useState("");
-  let [lottery_no1, setLottery_no1] = useState("");
-  let [lottery_no2, setLottery_no2] = useState("");
-  let [lottery_no3, setLottery_no3] = useState("");
-  let [lottery_no4, setLottery_no4] = useState("");
-  let [lottery_no5, setLottery_no5] = useState("");
   let [lottery_no6, setLottery_no6] = useState("");
   let [lottery_no7, setLottery_no7] = useState("");
   let [lottery_no8, setLottery_no8] = useState("");
@@ -39,7 +29,6 @@ function App() {
   let [lottery_no11, setLottery_no11] = useState("");
   let [ithTicket, setIthTicket] = useState("");
   let [ithWonTicket, setIthWonTicket] = useState("");
-  let [winning_tickets, setWinning_tickets] = useState("");
   let [unixtimeinweek, setUnixtimeinweek] = useState("");
   const [tickets, setTickets] = useState([]);
   const [lotteries, setLotteries] = useState([]);
