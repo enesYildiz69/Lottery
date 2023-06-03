@@ -203,9 +203,9 @@ function App() {
           console.error("Failed to execute getAllLotteries function:", error);
         });
     }
-    // it says ticket alreaady refunded even if it is not and need to try with another acc
+    // yes
     if(functionName === "collectTicketRefund") {
-      contractState.methods.collectTicketRefund(ticket_no).call().then(function(result) {
+      contractState.methods.collectTicketRefund(ticket_no).send({from: account}).then(function(result) {
         setResults(results => ({ ...results, collectTicketRefund: result }));
       });
     }
